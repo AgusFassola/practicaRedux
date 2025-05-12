@@ -7,6 +7,8 @@ const UserList = () => {
 const dispatch = useDispatch();
 const users = useSelector(state => state?.users);
 const [filteredUsers, setFilteredUsers] = useState([]);
+const [searchQuery, setSearchQuery] = useState("");
+
 
 useEffect(()=>{
     const initialUsers=[
@@ -20,11 +22,32 @@ useEffect(()=>{
 }, [])
 
 useEffect(()=>{
-    setFilteredUsers(users)
-},[users]);
+    //el ? es para prevenir en caso de que users sea nulo
+    //FILTRO POR NOMBRE Y EMAIL
+    const updatedFilteredUsers = users?.filter((user) => 
+        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+
+    setFilteredUsers(updatedFilteredUsers);
+
+},[users, searchQuery]);
 
 return (
     <>
+        <div className='search-bar'>
+            <div className="input-group">
+                <span className='input-group-text'>
+                    <i className="bi bi-search"> </i>
+                </span>
+                <input type="search"
+                    className='form-control'
+                    placeholder='Search user...'
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+            </div>
+        </div>
         {
             filteredUsers.length === 0 ? 
             (
