@@ -9,6 +9,23 @@ const users = useSelector(state => state?.users);
 const [filteredUsers, setFilteredUsers] = useState([]);
 const [searchQuery, setSearchQuery] = useState("");
 
+const [isModalOpen, setIsModalOpen] = useState(false);
+const [editingUser, setEditingUser] = useState(null);
+
+const handleNewUser =()=>{
+    setEditingUser(null)
+    setIsModalOpen(true);
+}
+
+const handleCancel =()=>{
+    setIsModalOpen(false);
+}
+
+const handleModalClick =(e)=>{
+    if(e.target.className === 'modal'){
+        setIsModalOpen(false)
+    }
+}
 
 useEffect(()=>{
     const initialUsers=[
@@ -79,6 +96,17 @@ return (
                         }
                     </tbody>
                 </table>
+            )
+        }
+        <button className='btn btn-primary' onClick={handleNewUser}>Add New User</button>
+        {
+            isModalOpen && (
+                <div className='modal' onClick={handleModalClick}>
+                    <div className='modal-content' onClick={(e)=> e.stopPropagation()}>
+                        <h2>{editingUser ? 'Edit User' : 'Add User' }</h2>
+                        <p>This is the modal window</p>
+                    </div>
+                </div>
             )
         }
     </>
