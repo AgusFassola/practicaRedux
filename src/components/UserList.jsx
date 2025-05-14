@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { loadUsers } from '../store/actions'
+import { addUser, editUser, loadUsers } from '../store/actions'
+import UserForm from './UserForm';
 
 const UserList = () => {
 
@@ -25,6 +26,28 @@ const handleModalClick =(e)=>{
     if(e.target.className === 'modal'){
         setIsModalOpen(false)
     }
+}
+
+const handleSave = (user) =>{
+    if(user.id && user.name && user.email){
+        dispatch(editUser(user))
+    }else{
+        if(user.name && user.email){
+            const newUser ={
+                id:Date.now(),
+                ...user
+            }
+
+            dispatch(addUser(newUser))
+        }
+    }
+
+    setIsModalOpen(false);
+}
+
+const handleEditClick = (user) =>{
+    setEditingUser(user);
+    setIsModalOpen(true);
 }
 
 useEffect(()=>{
@@ -86,7 +109,7 @@ return (
                                     <td>{user.name}</td>
                                     <td>{user.email}</td>
                                     <td>
-                                        <button className='btn btn-primary me-3'><i className='bi bi-pencil-square'></i>Edit</button>
+                                        <button className='btn btn-primary me-3' onClick={()=>handleEditClick(user)}><i className='bi bi-pencil-square' ></i>Edit</button>
                                         <button className='btn btn-danger'><i className='bi bi-trash'></i>Delete</button>
 
                                     </td>
@@ -104,7 +127,11 @@ return (
                 <div className='modal' onClick={handleModalClick}>
                     <div className='modal-content' onClick={(e)=> e.stopPropagation()}>
                         <h2>{editingUser ? 'Edit User' : 'Add User' }</h2>
-                        <p>This is the modal window</p>
+                        <UserForm
+                            currentUser={editingUser}
+                            onSave={handleSave}
+                            onCancel={handleCancel}
+                        />
                     </div>
                 </div>
             )
