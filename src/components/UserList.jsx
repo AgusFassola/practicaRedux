@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { addUser, editUser, loadUsers } from '../store/actions'
+import { addUser, deleteUser, editUser, loadUsers } from '../store/actions'
 import UserForm from './UserForm';
 
 const UserList = () => {
 
 const dispatch = useDispatch();
 const users = useSelector(state => state?.users);
+const currentUser = useSelector(state => state?.currentUser);
+
 const [filteredUsers, setFilteredUsers] = useState([]);
 const [searchQuery, setSearchQuery] = useState("");
 
@@ -50,6 +52,13 @@ const handleEditClick = (user) =>{
     setIsModalOpen(true);
 }
 
+const handlleDelete =(userId)=>{
+    if(currentUser && currentUser.id === userId){
+        dispatch(editUser(null));
+    }
+
+    dispatch(deleteUser(userId));
+}
 useEffect(()=>{
     const initialUsers=[
         { id:1, name: 'Alice', email: 'alice@gmail.com' },
@@ -110,7 +119,7 @@ return (
                                     <td>{user.email}</td>
                                     <td>
                                         <button className='btn btn-primary me-3' onClick={()=>handleEditClick(user)}><i className='bi bi-pencil-square' ></i>Edit</button>
-                                        <button className='btn btn-danger'><i className='bi bi-trash'></i>Delete</button>
+                                        <button className='btn btn-danger' onClick={()=> handlleDelete(user.id)}><i className='bi bi-trash'></i>Delete</button>
 
                                     </td>
 

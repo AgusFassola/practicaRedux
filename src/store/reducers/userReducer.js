@@ -1,4 +1,4 @@
-import { ADD_USER, EDIT_USER, LOAD_USERS } from "../actions";
+import { ADD_USER, DELETE_USER, EDIT_USER, LOAD_USERS } from "../actions";
 
 const initialState ={
     users:[],
@@ -6,7 +6,6 @@ const initialState ={
 };
 
 export const userReducer = (state = initialState, action) =>{
-   console.log("action",action)
     switch(action.type){
         case LOAD_USERS:
             return{
@@ -35,5 +34,16 @@ export const userReducer = (state = initialState, action) =>{
                 currentUser: action.payload,
                
             };
+        case DELETE_USER:
+            return{
+                ...state,
+                users: state.users.filter((user) => user.id !== action.payload),
+                currentUser:
+                    state.currentUser && state.currentUser.id === action.payload 
+                    ? null : state.currentUser,
+
+            }
+        default: 
+            return state;
     }
 };
